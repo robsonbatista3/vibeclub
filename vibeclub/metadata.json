@@ -1,0 +1,5 @@
+{
+  "name": "VibeClub",
+  "description": "Plataforma de rede social adulta com lives, monetização por moedas virtuais e pagamentos via PIX.",
+  "requestFramePermissions": ["camera", "microphone"]
+}
