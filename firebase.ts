@@ -5,7 +5,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyD9RFwfzhEKQwhFm0eRNNJEUMgg7xS9LPo",
   authDomain: "vibeclub-77b10.firebaseapp.com",
   projectId: "vibeclub-77b10",
-  storageBucket: "vibeclub-77b10.firebasestorage.app",
+  storageBucket: "vibeclub-77b10.appspot.com",
   messagingSenderId: "828613035269",
   appId: "1:828613035269:web:346b5525c792196d38a36c"
 };
@@ -13,4 +13,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const provider = new GoogleAuthProvider();
+
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+  prompt: "select_account"
+});
+
+export { provider };
