@@ -1,0 +1,168 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and balance information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "bio": { "type": "string" },
+        "coins": { "type": "number", "description": "Current coin balance" },
+        "role": { "type": "string", "enum": ["user", "creator"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "coins", "role"]
+    },
+    "Live": {
+      "title": "Live",
+      "description": "Active or past live stream",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "creatorId": { "type": "string" },
+        "creatorName": { "type": "string" },
+        "title": { "type": "string" },
+        "price": { "type": "number", "description": "Coins required to enter" },
+        "status": { "type": "string", "enum": ["online", "offline"] },
+        "viewerCount": { "type": "number" },
+        "maxWindows": { "type": "number", "description": "Number of open slots (1-8)" },
+        "slots": { 
+          "type": "array", 
+          "items": {
+            "type": "object",
+            "properties": {
+              "userId": { "type": "string" },
+              "userName": { "type": "string" },
+              "photoURL": { "type": "string" }
+            }
+          }
+        },
+        "startedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["creatorId", "price", "status"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Coin purchase or spending",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["purchase", "entry", "gift", "window"] },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "externalId": { "type": "string", "description": "Mercado Pago ID" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "amount", "type", "status"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Chat message in a live",
+      "type": "object",
+      "properties": {
+        "liveId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "text": { "type": "string" },
+        "isGift": { "type": "boolean" },
+        "giftAmount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["liveId", "userId", "text"]
+    },
+    "CreatorApplication": {
+      "title": "CreatorApplication",
+      "description": "Application to become a creator",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "reason": { "type": "string", "description": "Why they want to be a creator" },
+        "socialMedia": { "type": "string", "description": "Link to other social media" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "reason", "status"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "User photo post",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "caption": { "type": "string" },
+        "likes": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "imageUrl", "createdAt"]
+    },
+    "Follower": {
+      "title": "Follower",
+      "description": "Follow relationship between users",
+      "type": "object",
+      "properties": {
+        "followerId": { "type": "string", "description": "User who is following" },
+        "followedId": { "type": "string", "description": "User being followed" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["followerId", "followedId", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User notification",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "User receiving the notification" },
+        "type": { "type": "string", "enum": ["follower", "gift", "system"] },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "fromId": { "type": "string", "description": "User who triggered the notification" },
+        "fromName": { "type": "string" },
+        "fromPhoto": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "title", "message", "read", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/lives/{liveId}": {
+      "schema": "Live",
+      "description": "Live stream data"
+    },
+    "/lives/{liveId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages within a live"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Payment and coin transactions"
+    },
+    "/creator_applications/{applicationId}": {
+      "schema": "CreatorApplication",
+      "description": "Applications for creator status"
+    },
+    "/posts/{postId}": {
+      "schema": "Post",
+      "description": "User photo posts"
+    },
+    "/followers/{followerId_followedId}": {
+      "schema": "Follower",
+      "description": "Follow relationships"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "User notifications"
+    }
+  }
+}
